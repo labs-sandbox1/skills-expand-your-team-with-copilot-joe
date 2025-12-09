@@ -899,6 +899,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+<<<<<<< HEAD
   // Handle share functionality
   async function handleShare(activityName, description, schedule) {
     const shareTitle = `${activityName} at ${SCHOOL_NAME}`;
@@ -946,6 +947,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+=======
+>>>>>>> remotes/origin/main
   // Dark mode functionality
   function updateDarkModeIcon() {
     if (document.body.classList.contains("dark-mode")) {
