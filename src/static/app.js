@@ -34,6 +34,9 @@ document.addEventListener("DOMContentLoaded", () => {
     technology: { label: "Technology", color: "#e8eaf6", textColor: "#3949ab" },
   };
 
+  // School name constant
+  const SCHOOL_NAME = "Mergington High School";
+
   // State for activities and filters
   let allActivities = {};
   let currentFilter = "all";
@@ -569,7 +572,7 @@ document.addEventListener("DOMContentLoaded", () => {
           </div>
         `
         }
-        <button class="share-button" data-activity="${name}" data-description="${details.description.replace(/"/g, '&quot;')}" data-schedule="${formattedSchedule.replace(/"/g, '&quot;')}" title="Share this activity">
+        <button class="share-button" title="Share this activity">
           <span class="share-icon">🔗</span>
           <span class="share-text">Share</span>
         </button>
@@ -868,7 +871,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Handle share functionality
   async function handleShare(activityName, description, schedule) {
-    const shareTitle = `${activityName} at Mergington High School`;
+    const shareTitle = `${activityName} at ${SCHOOL_NAME}`;
     const shareText = `Check out this activity: ${activityName}\n\n${description}\n\nSchedule: ${schedule}`;
     const shareUrl = window.location.href;
 
@@ -885,8 +888,9 @@ document.addEventListener("DOMContentLoaded", () => {
         // User cancelled the share or an error occurred
         if (error.name !== 'AbortError') {
           console.error("Error sharing:", error);
-          // Fall back to copy to clipboard
-          fallbackShare(shareText);
+          // Fall back to copy to clipboard and inform user
+          showMessage("Sharing failed. Copying to clipboard instead...", "info");
+          setTimeout(() => fallbackShare(shareText), 1000);
         }
       }
     } else {
