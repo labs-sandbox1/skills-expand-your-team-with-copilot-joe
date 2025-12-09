@@ -861,29 +861,36 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Dark mode functionality
-  function initializeDarkMode() {
-    // Check if user has a saved preference
-    const savedDarkMode = localStorage.getItem("darkMode");
-    
-    if (savedDarkMode === "enabled") {
-      document.body.classList.add("dark-mode");
+  function updateDarkModeIcon() {
+    if (document.body.classList.contains("dark-mode")) {
       darkModeIcon.textContent = "☀️";
     } else {
       darkModeIcon.textContent = "🌙";
     }
   }
 
+  function initializeDarkMode() {
+    // Check if user has a saved preference
+    const savedDarkMode = localStorage.getItem("darkMode");
+    
+    if (savedDarkMode === "enabled") {
+      document.body.classList.add("dark-mode");
+    }
+    
+    updateDarkModeIcon();
+  }
+
   function toggleDarkMode() {
     document.body.classList.toggle("dark-mode");
     
-    // Update icon
+    // Save preference
     if (document.body.classList.contains("dark-mode")) {
-      darkModeIcon.textContent = "☀️";
       localStorage.setItem("darkMode", "enabled");
     } else {
-      darkModeIcon.textContent = "🌙";
       localStorage.setItem("darkMode", "disabled");
     }
+    
+    updateDarkModeIcon();
   }
 
   // Dark mode toggle event listener
