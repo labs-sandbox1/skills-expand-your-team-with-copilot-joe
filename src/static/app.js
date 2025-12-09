@@ -34,6 +34,9 @@ document.addEventListener("DOMContentLoaded", () => {
     technology: { label: "Technology", color: "#e8eaf6", textColor: "#3949ab" },
   };
 
+  // School name constant
+  const SCHOOL_NAME = "Mergington High School";
+
   // State for activities and filters
   let allActivities = {};
   let currentFilter = "all";
@@ -569,6 +572,10 @@ document.addEventListener("DOMContentLoaded", () => {
           </div>
         `
         }
+        <button class="share-button" title="Share this activity">
+          <span class="share-icon">🔗</span>
+          <span class="share-text">Share</span>
+        </button>
       </div>
     `;
 
@@ -587,6 +594,12 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       }
     }
+
+    // Add click handler for share button
+    const shareButton = activityCard.querySelector(".share-button");
+    shareButton.addEventListener("click", () => {
+      handleShare(name, details.description, formattedSchedule);
+    });
 
     activitiesList.appendChild(activityCard);
   }
@@ -855,6 +868,53 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error("Error signing up:", error);
     }
   });
+
+  // Handle share functionality
+  async function handleShare(activityName, description, schedule) {
+    const shareTitle = `${activityName} at ${SCHOOL_NAME}`;
+    const shareText = `Check out this activity: ${activityName}\n\n${description}\n\nSchedule: ${schedule}`;
+    const shareUrl = window.location.href;
+
+    // Try to use the native Web Share API if available (works on mobile devices)
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: shareTitle,
+          text: shareText,
+          url: shareUrl
+        });
+        showMessage("Activity shared successfully!", "success");
+      } catch (error) {
+        // User cancelled the share or an error occurred
+        if (error.name !== 'AbortError') {
+          console.error("Error sharing:", error);
+          // Fall back to copy to clipboard and inform user
+          showMessage("Sharing failed. Copying to clipboard instead...", "info");
+          setTimeout(() => fallbackShare(shareText), 1000);
+        }
+      }
+    } else {
+      // Fallback for desktop: copy to clipboard
+      fallbackShare(shareText);
+    }
+  }
+
+  // Fallback share method - copy to clipboard
+  function fallbackShare(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text)
+        .then(() => {
+          showMessage("Activity details copied to clipboard! You can now paste and share.", "success");
+        })
+        .catch((error) => {
+          console.error("Error copying to clipboard:", error);
+          showMessage("Unable to copy. Please share manually.", "error");
+        });
+    } else {
+      // Very old browser fallback
+      showMessage("Sharing not supported in this browser. Please copy the activity details manually.", "info");
+    }
+  }
 
   // Expose filter functions to window for future UI control
   window.activityFilters = {
